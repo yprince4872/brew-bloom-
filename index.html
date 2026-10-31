@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#e6eed8" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0c2420" media="(prefers-color-scheme: dark)">
+<title>Brew &amp; Bloom Café</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e6eed8;--fg:#0e2a25;--card:#f4f8ea;--mut:#4d6660;--btn:#f4b942;--btnt:#0e2a25;--ac:#a85d00;--rose:#d8456f;--line:rgba(14,42,37,.18);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c2420;--fg:#eaf0dc;--card:#14332d;--mut:#9db5ab;--ac:#f4b942;--rose:#ff7a9c;--line:rgba(234,240,220,.2);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c2420;--fg:#eaf0dc;--card:#14332d;--mut:#9db5ab;--ac:#f4b942;--rose:#ff7a9c;--line:rgba(234,240,220,.2);color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*:before,*:after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 1rem/1.6 Figtree,system-ui,sans-serif;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:60}
+h1,h2,h3,.logo{font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.02;margin:0}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--rose);outline-offset:3px}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;display:flex;align-items:center;gap:1rem;padding:.8rem clamp(1rem,4vw,3rem);background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.logo{font-weight:800;font-size:1.35rem;margin-right:auto}
+.nav nav{display:flex;gap:1.2rem;font-weight:600}
+.nav nav a{position:relative;padding:.2rem 0}
+.nav nav a:after{content:"";position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--rose);transform:scaleX(0);transform-origin:left;transition:transform .35s}
+.nav nav a:hover:after,.nav nav a.on:after{transform:scaleX(1)}
+.ib{border:1px solid var(--line);background:var(--card);border-radius:99px;padding:.45rem .9rem;cursor:pointer;font-weight:600}
+.btn{display:inline-block;border:0;background:var(--btn);color:var(--btnt);font-weight:800;border-radius:99px;padding:.85rem 1.6rem;cursor:pointer;transition:transform .25s ease,box-shadow .25s}
+.btn:hover{box-shadow:0 10px 30px -10px var(--rose)}
+.btn.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--fg)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+main{min-height:80vh}
+.wrap{padding:0 clamp(1rem,4vw,3rem);max-width:1200px;margin:0 auto}
+.hero{position:relative;min-height:86vh;display:flex;flex-direction:column;justify-content:center;gap:1.5rem}
+.hero h1{font-size:clamp(3rem,11vw,9rem);font-weight:300;letter-spacing:-.03em;max-width:12ch}
+.w{display:inline-block;white-space:nowrap}
+.ch{display:inline-block;font-variation-settings:"wght" 300,"wdth" 100;animation:rise .9s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*35ms)}
+@keyframes rise{from{opacity:0;transform:translateY(80%) rotate(6deg)}}
+.hero p{max-width:46ch;color:var(--mut);font-size:1.15rem;animation:rise 1s .9s both}
+.hero .acts{display:flex;gap:.8rem;flex-wrap:wrap;animation:rise 1s 1.1s both}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;pointer-events:none;will-change:transform}
+.b1{width:34vw;height:34vw;right:-8vw;top:6vh;background:var(--btn)}
+.b2{width:26vw;height:26vw;right:14vw;bottom:-6vw;background:var(--rose);opacity:.35}
+.fl{position:absolute;right:10%;font-size:clamp(2.5rem,7vw,5rem);animation:fl 6s ease-in-out infinite}
+@keyframes fl{50%{transform:translateY(-22px) rotate(8deg)}}
+.mq{overflow:hidden;border-block:1px solid var(--line);padding:1rem 0;margin:2rem 0;font:800 clamp(1.4rem,3vw,2.2rem)/1 "Bricolage Grotesque",sans-serif}
+.mq div{display:flex;gap:3rem;width:max-content;animation:mq 28s linear infinite}
+.mq:hover div{animation-play-state:paused}
+@keyframes mq{to{transform:translateX(-50%)}}
+.sec{padding-block:3rem}
+.sec h2{font-size:clamp(2rem,5vw,3.6rem);font-weight:700;margin-bottom:1.5rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:1.2rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:1.1rem;transition:transform .15s ease-out,box-shadow .3s;transform-style:preserve-3d;display:flex;flex-direction:column;gap:.5rem}
+.card:hover{box-shadow:0 24px 40px -24px rgba(0,0,0,.45)}
+.em{height:130px;border-radius:14px;display:grid;place-items:center;font-size:4rem;background:linear-gradient(135deg,color-mix(in srgb,var(--btn) 40%,var(--card)),color-mix(in srgb,var(--rose) 28%,var(--card)));transform:translateZ(30px)}
+.em{overflow:hidden}.em img{width:100%;height:100%;object-fit:cover;display:block}
+.th{width:44px;height:44px;border-radius:10px;overflow:hidden;display:grid;place-items:center;font-size:1.6rem;flex:none}.th img{width:100%;height:100%;object-fit:cover}
+.chip[disabled]{opacity:.45;cursor:not-allowed}.chip{text-align:center;line-height:1.25}
+.tag.Confirmed,.tag.Done{background:#7d9a6a}.tag.Cancelled{background:#999}
+.sl{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.6rem;margin:1rem 0}
+.card h3{font-size:1.25rem;font-weight:700}
+.card p{margin:0;color:var(--mut);font-size:.92rem;flex:1}
+.row{display:flex;align-items:center;justify-content:space-between;gap:.6rem}
+.pr{font:800 1.2rem "Bricolage Grotesque",sans-serif}
+.chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.chip{border:1.5px solid var(--line);background:transparent;border-radius:99px;padding:.45rem 1rem;cursor:pointer;font-weight:600;transition:all .25s}
+.chip.on,.chip:hover{background:var(--fg);color:var(--bg)}
+.story{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center}
+.big{font:800 clamp(5rem,18vw,14rem)/.85 "Bricolage Grotesque",sans-serif;color:transparent;-webkit-text-stroke:2px var(--ac);will-change:transform}
+.rv{opacity:0;transform:translateY(40px) scale(.98);transition:opacity .8s,transform .8s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:1.4rem}
+.two{display:grid;grid-template-columns:1.3fr 1fr;gap:1.4rem;align-items:start}
+.ln{display:flex;align-items:center;gap:.8rem;padding:.7rem 0;border-bottom:1px solid var(--line)}
+.ln b{flex:1}
+.q{display:inline-flex;align-items:center;gap:.4rem}
+.q button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:transparent;cursor:pointer}
+input,select{width:100%;padding:.7rem .9rem;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);margin:.25rem 0 .8rem}
+label{font-weight:600;font-size:.9rem}
+.tot{font:800 2rem "Bricolage Grotesque",sans-serif}
+#qr{display:grid;place-items:center;margin:1rem 0;padding:.8rem;background:#fff;border-radius:16px;width:max-content}
+.tabs{display:flex;gap:.5rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.tag{display:inline-block;padding:.15rem .7rem;border-radius:99px;background:var(--btn);color:var(--btnt);font-weight:700;font-size:.8rem}
+.sc{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:560px}
+td,th{text-align:left;padding:.6rem;border-bottom:1px solid var(--line);vertical-align:top}
+footer{padding:3rem clamp(1rem,4vw,3rem);border-top:1px solid var(--line);color:var(--mut);margin-top:3rem}
+.cur{position:fixed;left:0;top:0;z-index:99;pointer-events:none;border-radius:50%;display:none}
+.cd{width:8px;height:8px;background:var(--rose);margin:-4px 0 0 -4px}
+.cr{width:38px;height:38px;border:1.5px solid var(--rose);margin:-19px 0 0 -19px;transition:width .25s,height .25s,margin .25s,background .25s}
+.cr.big2{width:70px;height:70px;margin:-35px 0 0 -35px;background:color-mix(in srgb,var(--rose) 18%,transparent)}
+@media(hover:hover) and (pointer:fine){.cr{display:block}.cr.hide{opacity:0}}
+.cr{transition:width .25s,height .25s,margin .25s,background .25s,opacity .2s}
+.wipe{position:fixed;inset:0;background:var(--btn);z-index:90;transform:translateY(100%);pointer-events:none}
+.wipe.go{animation:wp .75s cubic-bezier(.7,0,.2,1)}
+@keyframes wp{0%{transform:translateY(100%)}45%,55%{transform:translateY(0)}100%{transform:translateY(-100%)}}
+.toast{position:fixed;left:50%;bottom:calc(1.5rem + env(safe-area-inset-bottom,0px));transform:translate(-50%,150%);background:var(--fg);color:var(--bg);padding:.7rem 1.3rem;border-radius:99px;font-weight:600;z-index:95;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.toast.on{transform:translate(-50%,0)}
+@media(max-width:760px){.story,.two{grid-template-columns:1fr}.nav nav{gap:.7rem;font-size:.92rem}.fl{display:none}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.rv{opacity:1;transform:none}}
+
+html{-webkit-text-size-adjust:100%}
+a,button,label,.chip{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.hero{min-height:86vh;min-height:86svh}
+@media(hover:none){.card:hover,.btn:hover{box-shadow:none}}
+@media(max-width:760px){
+.nav{padding:.6rem 1rem;gap:.6rem;backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg)}
+.logo{font-size:1.15rem}
+.nav nav{position:fixed;left:0;right:0;bottom:0;z-index:55;justify-content:space-around;gap:0;padding:.3rem .5rem calc(.3rem + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line);font-size:.82rem}
+.nav nav a{flex:1;text-align:center;padding:.75rem .2rem;min-height:44px}
+.nav nav a:after{bottom:.35rem;left:30%;width:40%}
+body{padding-bottom:4.4rem}
+.toast{bottom:calc(5rem + env(safe-area-inset-bottom,0px))}
+.hero{gap:1.1rem;min-height:68vh;min-height:68svh}
+.hero h1{font-size:clamp(2.6rem,13vw,4.5rem)}
+.hero p{font-size:1rem}
+.hero .acts .btn{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;min-height:52px;padding-inline:.8rem;white-space:nowrap}
+.blob{filter:blur(45px);opacity:.4}.b2{display:none}
+.mq{margin:1rem 0}
+.sec{padding-block:2rem}
+.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+.card{padding:.7rem;border-radius:16px}
+.em{height:96px;font-size:2.6rem;border-radius:11px}
+.card h3{font-size:1rem}
+.card p{font-size:.8rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card .row{flex-direction:column;align-items:stretch;gap:.4rem}
+.card .btn{padding:.65rem .4rem;text-align:center}
+.chips{flex-wrap:nowrap;overflow-x:auto;margin:0 -1rem 1rem;padding:0 1rem;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap;min-height:42px}
+.q button{width:38px;height:38px}
+.ln{flex-wrap:wrap}.ln b{min-width:40%}
+.panel{padding:1rem;border-radius:16px}
+.big{font-size:clamp(4rem,24vw,7rem)}
+.sl{grid-template-columns:repeat(2,1fr)}
+.wipe.go{animation-duration:.5s}
+footer{padding:2rem 1rem}
+}
+.toast{opacity:0;transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .3s}.toast.on{opacity:1}
+html{overflow-x:clip}
+.days{display:flex;gap:.5rem;overflow-x:auto;padding:.4rem 0 .8rem;margin:.4rem 0;scrollbar-width:none;position:relative}.days::-webkit-scrollbar{display:none}.day{flex:none;min-width:78px;border-radius:16px;padding:.5rem .6rem}
+@media(max-width:760px){.days{margin-inline:-1rem;padding-inline:1rem}}
+</style></head><body>
+<div class="cur cd" id="cd"></div><div class="cur cr" id="cr"></div><div class="wipe" id="wp"></div>
+<header class="nav"><a class="logo" href="#home" id="lg"></a>
+<nav><a href="#home" data-r="home">Home</a><a href="#menu" data-r="menu">Menu</a><a href="#cabins" data-r="cabins">Cabins</a><a href="#account" data-r="account" id="acl">Login</a></nav>
+<a class="ib" href="#cart" data-r="cart" aria-label="Cart">Cart <b id="cc">0</b></a>
+<button class="ib" data-a="theme" aria-label="Switch theme">◐</button></header>
+<main id="app"></main>
+<footer id="ft"></footer>
+<div class="toast" id="ts" role="status"></div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])),rs=n=>"₹"+Number(n).toLocaleString("en-IN");
+let tk=(()=>{try{return localStorage.getItem("bbu")}catch(e){return null}})(),me=null,mode="login",nxt="",myO=[],myB=[],cb={date:"",dur:1,av:null,sel:null,cab:null,done:0,err:""};
+const setTk=t=>{tk=t;try{t?localStorage.setItem("bbu",t):localStorage.removeItem("bbu")}catch(e){}};
+const api=async(p,o)=>{const r=await fetch(p,tk?{...o,headers:{...(o&&o.headers),Authorization:"Bearer "+tk}}:o),j=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(j.error||"Something went wrong");e.status=r.status;throw e}return j};
+let S={cfg:{name:"Brew & Bloom",upi:"",heroTitle:"Brew slowly. Bloom loudly.",heroText:"",storyTitle:"",storyText:"",hours:"",address:"",phone:""},menu:[]},cart={},flt="All",last=null,ready=false,fail=false;
+const H={"Content-Type":"application/json"};
+const rzp=()=>window.Razorpay?Promise.resolve():new Promise((ok,no)=>{const s=document.createElement("script");s.src="https://checkout.razorpay.com/v1/checkout.js";s.onload=ok;s.onerror=()=>no(new Error("Could not load the payment window"));document.head.appendChild(s)});
+const hm=n=>String(Math.floor(n/60)).padStart(2,"0")+":"+String(n%60).padStart(2,"0"),dl=m=>m%60?m+" min":(m/60)+(m>60?" hours":" hour");
+async function accLoad(){try{[myO,myB]=await Promise.all([api("/api/my/orders"),api("/api/my/bookings")])}catch(e){if(e.status==401){setTk(null);me=null;brand()}}}
+async function cabLoad(){if(!cb.date)cb.date=new Date().toLocaleDateString("en-CA");try{cb.av=await api("/api/cabins/availability?date="+cb.date);cb.err=""}catch(e){cb.av=null;cb.err=e.message}}
+const fd=s=>{const[y,m,d]=s.split("-");return +d+" "+["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m-1]+" "+y};
+const t12=n=>{const h=Math.floor(n/60),m=n%60;return ((h%12)||12)+":"+String(m).padStart(2,"0")+" "+(h<12?"AM":"PM")},s12=s=>{const[a,b]=s.split(":");return t12(+a*60+ +b)};
+const cnt=()=>Object.values(cart).reduce((a,b)=>a+b,0);
+const find=i=>S.menu.find(m=>m._id==i);
+const sum=()=>Object.entries(cart).reduce((a,[i,q])=>a+q*(find(i)||{price:0}).price,0);
+function toast(t){const e=$("#ts");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),2200)}
+function sp(t){let i=0;return t.split(" ").map(w=>'<span class="w">'+[...w].map(c=>`<span class="ch" style="--i:${i++}">${esc(c)}</span>`).join("")+"</span>").join(" ")}
+async function loadMe(){if(!tk){me=null;return}try{me=await api("/api/me")}catch(e){me=null;if(e.status==401)setTk(null)}}
+async function load(){await loadMe();try{const[c,m]=await Promise.all([api("/api/config"),api("/api/menu")]);S.cfg=c;S.menu=m;fail=false;
+for(const i in cart)if(!find(i)||!find(i).available)delete cart[i]}catch(e){fail=true}ready=true;brand();cc()}
+const cardH=m=>`<article class="card rv"><div class="em">${m.img?`<img src="${esc(m.img)}" alt="${esc(m.name)}" loading="lazy">`:esc(m.emoji)}</div><h3>${esc(m.name)}</h3><p>${esc(m.description)}</p><div class="row"><span class="pr">${rs(m.price)}</span><button class="btn mag" data-a="add" data-id="${m._id}" ${m.available?"":"disabled"}>${m.available?"Add to cart":"Sold out"}</button></div></article>`;
+const msg=t=>`<section class="sec wrap"><div class="panel"><h2 style="font-size:2rem">${t}</h2></div></section>`;
+const V={
+home(){const f=S.menu.filter(m=>m.available).slice(0,4),it=["Single-origin coffee","Baked every morning","Pay with PhonePe, GPay or Paytm","Slow chai","Open late"],mq=it.map(t=>`<span>${t}</span><span style="color:var(--rose)">✺</span>`).join("");
+return `<section class="hero wrap"><div class="blob b1" data-p=".25"></div><div class="blob b2" data-p="-.18"></div><span class="fl" style="top:18%;animation-delay:-1s">☕</span><span class="fl" style="top:48%;right:24%;animation-delay:-3s">🥐</span>
+<h1 id="h1" aria-label="${esc(S.cfg.heroTitle)}">${sp(S.cfg.heroTitle)}</h1>
+<p>${esc(S.cfg.heroText)}</p>
+<div class="acts"><a class="btn mag" href="#menu">See the menu</a><a class="btn ghost mag" href="#cart">Your cart</a></div></section>
+<div class="mq"><div>${mq}${mq}${mq}${mq}</div></div>
+<section class="sec wrap"><h2 class="rv">Today at the counter</h2><div class="grid">${f.map(cardH).join("")||"<p>The menu is being updated. Check back soon.</p>"}</div><p class="rv" style="margin-top:1.5rem"><a class="btn ghost mag" href="#menu">Full menu</a></p></section>
+<section class="sec wrap story"><div class="big" data-p=".08">Slow<br>Roast</div><div class="rv"><h2>${esc(S.cfg.storyTitle)}</h2><p style="color:var(--mut)">${esc(S.cfg.storyText)}</p></div></section>`},
+menu(){if(!ready)return msg("Loading the menu");if(fail)return msg("Menu could not load. Refresh the page.");
+const cs=["All",...new Set(S.menu.map(m=>m.category))],l=S.menu.filter(m=>flt=="All"||m.category==flt);
+return `<section class="sec wrap"><h2 class="rv in">Menu</h2><div class="chips">${cs.map(c=>`<button class="chip ${c==flt?"on":""}" data-a="flt" data-id="${esc(c)}">${esc(c)}</button>`).join("")}</div><div class="grid">${l.map(cardH).join("")||"<p>Nothing here yet. Check back soon.</p>"}</div></section>`},
+cabins(){const av=cb.av,tdy=new Date().toLocaleDateString("en-CA"),mx=new Date(Date.now()+30*864e5).toLocaleDateString("en-CA"),step=av?(av.step||60):60,len=cb.dur*60;
+const sd=cb.date||tdy,days=[...Array(31)].map((_,i)=>{const x=new Date(Date.now()+i*864e5);return{v:x.toLocaleDateString("en-CA"),w:x.toLocaleDateString("en-IN",{weekday:"short"}),n:x.getDate(),m:x.toLocaleDateString("en-IN",{month:"short"})}});
+const top=`<h2 style="font-size:2.2rem">Book a cabin</h2><h3 style="margin:1rem 0 0">Choose a date</h3><div class="days">${days.map(x=>`<button class="chip day ${x.v==sd?"on":""}" data-a="day" data-id="${x.v}">${x.w}<br><b>${x.n} ${x.m}</b></button>`).join("")}</div><label style="display:block;max-width:320px">How long<select data-c="dur">${[1,2,3,4].map(n=>`<option value="${n}" ${n==cb.dur?"selected":""}>${dl(n*60)}${av?", "+rs(av.rate*n):""}</option>`).join("")}</select></label>`;
+let body="";
+if(!av)body=`<p>${cb.err?esc(cb.err):"Loading cabin times"}</p>`;
+else{const nm=av.nowMin||0,free=(c,s,e)=>c.active&&s>=nm&&!c.busy.some(x=>x.s<e&&x.e>s);
+const fr=c=>{if(!c.active)return null;const o=[];let cur=Math.max(av.open,nm);for(const x of [...c.busy].sort((p,q)=>p.s-q.s)){if(x.s>cur)o.push([cur,Math.min(x.s,av.close)]);cur=Math.max(cur,x.e)}if(cur<av.close)o.push([cur,av.close]);return o.filter(r=>r[1]>r[0])};
+const sm=av.cabins.map(c=>{const r=fr(c);return `<div class="ln"><b>${esc(c.name)}</b><span>${r===null?"Not available":!r.length?"Fully booked":"Free "+r.map(([x,y])=>t12(x)+" to "+t12(y)).join(", ")}</span></div>`}).join("");
+const slots=[];for(let t=av.open;t+len<=av.close;t+=step)slots.push(t);
+const fc=t=>av.cabins.filter(c=>free(c,t,t+len)),any=slots.some(t=>fc(t).length);
+body=`<div class="panel" style="margin:1rem 0">${sm}</div>`+(any?`<h3>Pick a start time</h3><div class="sl">${slots.map(t=>{const n=fc(t).length;return `<button class="chip ${cb.sel===t?"on":""}" ${n?"":"disabled"} data-a="pick" data-id="${t}">${t12(t)} to ${t12(t+len)}<br><small>${n?n+(n>1?" cabins free":" cabin free"):"Full"}</small></button>`}).join("")}</div>`:`<div class="panel"><h3>No booking available</h3><p style="color:var(--mut)">All cabins are full for this time. Please choose another date or a shorter time.</p></div>`);
+if(cb.sel!=null){const f=fc(cb.sel);body+=f.length?`<div class="panel"><h3>${t12(cb.sel)} to ${t12(cb.sel+len)}: choose a cabin</h3><div class="sl">${av.cabins.map(c=>{const ok=f.some(x=>x.id==c.id);return `<button class="chip ${cb.cab==c.id?"on":""}" ${ok?"":"disabled"} data-a="cabin" data-id="${c.id}">${esc(c.name)}<br><small>${ok?"Free":"Booked"}</small></button>`}).join("")}</div>`+(me?`<div class="panel" style="background:var(--bg);margin-top:1rem"><div class="ln"><b>Cabin charge</b><span>${rs(av.rate)} per hour</span></div><div class="ln"><b>Total for ${dl(len)}</b><span class="pr">${rs(av.rate*cb.dur)}</span></div><div class="ln"><b>Advance to pay now</b><span class="pr">${rs(av.advance)}</span></div><div class="ln"><b>Balance to pay at the café</b><span>${rs(Math.max(0,av.rate*cb.dur-av.advance))}</span></div></div><p style="color:var(--mut);font-size:.9rem">The advance is <b>non-refundable</b> if you cancel. Your cabin is booked as soon as the payment goes through.</p><label>Note (optional)<input id="bn" maxlength="200"></label><button class="btn mag" id="bb" data-a="book">Pay ${rs(av.advance)} and book this cabin</button>`:`<a class="btn mag" href="#account" data-a="nx" data-id="#cabins">Log in to book</a>`)+`</div>`:`<div class="panel"><p>No cabin is free at this time any more. Please choose another time.</p></div>`}}
+const dn=cb.done,done=dn?`<div class="panel" style="margin:1rem 0"><h3>${dn.status=="Confirmed"?"Cabin booked and confirmed":"Payment received"}</h3><p>${dn.status=="Confirmed"?`Cabin ${dn.cabin}, ${fd(dn.date)}, ${s12(dn.start)} to ${s12(dn.end)}. Please pay the balance of ${rs(dn.total-dn.advance)} at the café.`:"Someone booked this cabin just before your payment went through. We will contact you shortly to sort it out."} You can see it in <a href="#account" style="text-decoration:underline">your account</a>.</p></div>`:"";
+return `<section class="sec wrap">${top}${done}${body}</section>`},
+account(){const td=new Date().toLocaleDateString("en-CA");
+if(!me){const su=mode=="signup";return `<section class="sec wrap"><div class="panel" style="max-width:460px"><h2 style="font-size:2rem">${su?"Create account":"Log in"}</h2><p style="color:var(--mut)">Use your mobile number and a PIN to see your orders and cabin bookings.</p>${su?'<label>Your name<input id="an" maxlength="60" autocomplete="name"></label>':""}<label>Mobile number<input id="ap" inputmode="numeric" maxlength="10" autocomplete="tel"></label><label>PIN (4 to 6 digits)<input id="apin" type="password" inputmode="numeric" maxlength="6" autocomplete="${su?"new-password":"current-password"}"></label><button class="btn mag" id="ab" data-a="auth" style="width:100%">${su?"Create account":"Log in"}</button><p style="margin-top:1rem">${su?"Already have an account?":"New here?"} <a href="#account" data-a="mode" data-id="${su?"login":"signup"}" style="text-decoration:underline;font-weight:600">${su?"Log in":"Create an account"}</a></p><small style="color:var(--mut)">Forgot your PIN? Ask at the café and we will reset it.</small></div></section>`}
+const sl=s=>s=="Pending"?"Paid, we will contact you":s;
+return `<section class="sec wrap"><div class="row"><h2 style="margin:0">Hello, ${esc(me.name)}</h2><button class="btn ghost" data-a="logout">Log out</button></div>
+<div class="panel" style="margin-top:1.2rem"><h3>Cabin bookings</h3>${myB.map(b=>`<div class="ln"><b>${fd(b.date)}, ${s12(b.start)} to ${s12(b.end)}<br><small>Cabin ${b.cabin}${b.total?" · "+rs(b.total)+" total, "+rs(b.advance)+" advance paid":""}${b.note?" · "+esc(b.note):""}</small></b><span class="tag ${b.status}">${sl(b.status)}</span>${b.status!="Cancelled"&&b.date>=td?`<button class="chip" data-a="cancelB" data-id="${b._id}">Cancel</button>`:""}</div>`).join("")||'<p style="color:var(--mut)">No cabin bookings yet.</p>'}<a class="btn ghost mag" href="#cabins" style="margin-top:1rem">Book a cabin</a></div>
+<div class="panel"><h3>My orders</h3>${myO.map(o=>`<div class="ln"><b>${esc(o.code)}<br><small>${new Date(o.createdAt).toLocaleString("en-IN")}${o.tableNo?" · Table "+esc(o.tableNo):""}</small><br><small>${o.items.map(i=>esc(i.name)+" x"+i.qty).join(", ")}</small></b><span class="pr">${rs(o.total)}</span><span class="tag ${o.status}">${o.status}</span></div>`).join("")||'<p style="color:var(--mut)">No orders yet.</p>'}<a class="btn ghost mag" href="#menu" style="margin-top:1rem">Order something</a></div></section>`},
+cart(){if(last){const o=last;return `<section class="sec wrap"><div class="panel"><h2>Order ${esc(o.code)} placed</h2><p>Thank you, ${esc(o.name)}. Payment received (ref ${esc(o.txn)}). We have started preparing your order. You can see it any time in <a href="#account" style="text-decoration:underline">your account</a>. Show this order number at the counter.</p><a class="btn mag" href="#menu">Order more</a></div></section>`}
+const ls=Object.entries(cart).map(([i,q])=>({m:find(i),q})).filter(x=>x.m);
+if(!ls.length)return `<section class="sec wrap"><div class="panel"><h2>Your cart is empty</h2><p style="color:var(--mut)">Pick something from the menu to get started.</p><a class="btn mag" href="#menu">Browse the menu</a></div></section>`;
+if(!me)return `<section class="sec wrap"><div class="panel" style="max-width:520px"><h2>Log in to place your order</h2><p style="color:var(--mut)">Your cart is saved. Log in with your mobile number and PIN so you can see this order later in your account.</p><a class="btn mag" href="#account" data-a="nx" data-id="#cart">Log in or create account</a></div></section>`;
+const t=sum();
+return `<section class="sec wrap two"><div class="panel"><h2 style="font-size:2rem">Your order</h2>${ls.map(({m,q})=>`<div class="ln"><span class="th">${m.img?`<img src="${esc(m.img)}" alt="">`:esc(m.emoji)}</span><b>${esc(m.name)}</b><span class="q"><button data-a="dec" data-id="${m._id}" aria-label="Remove one">−</button>${q}<button data-a="inc" data-id="${m._id}" aria-label="Add one">+</button></span><span class="pr">${rs(m.price*q)}</span></div>`).join("")}<p class="row"><span>Total</span><span class="tot">${rs(t)}</span></p></div>
+<div class="panel"><h2 style="font-size:1.6rem">Your details</h2><p style="color:var(--mut)">Ordering as <b>${esc(me.name)}</b> (${esc(me.phone)})</p><label>Table number (for dine-in)<input id="tb" maxlength="10"></label><label>Note for the kitchen<input id="nt" maxlength="200"></label>
+<button class="btn mag" id="pb" data-a="place" style="width:100%">Pay ${rs(t)}</button><small style="color:var(--mut);display:block;margin-top:.6rem">Pay with PhonePe, Google Pay, Paytm or any UPI app. Cards and netbanking also work.</small></div></section>`}};
+const A={
+theme(){const r=document.documentElement,d=r.dataset.theme?r.dataset.theme=="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=d?"light":"dark"},
+add(i){cart[i]=(cart[i]||0)+1;cc();toast("Added to cart")},
+inc(i){cart[i]++;cc();draw()},dec(i){if(--cart[i]<=0)delete cart[i];cc();draw()},
+flt(c){flt=c;draw()},
+nx(i){nxt=i},
+mode(i){mode=i;draw()},
+async auth(){const ph=$("#ap").value.trim(),pin=$("#apin").value.trim(),nm=mode=="signup"?$("#an").value.trim():"";
+if(mode=="signup"&&!nm)return toast("Enter your name");if(!/^\d{10}$/.test(ph))return toast("Enter a 10-digit mobile number");if(!/^\d{4,6}$/.test(pin))return toast("PIN must be 4 to 6 digits");
+const b=$("#ab");b.disabled=true;
+try{const r=await api("/api/auth/"+(mode=="signup"?"register":"login"),{method:"POST",headers:H,body:JSON.stringify({name:nm,phone:ph,pin})});setTk(r.token);me=r.user;brand();const h=nxt;nxt="";if(h&&h!==location.hash)location.hash=h;else enter()}
+catch(e){toast(e.message);b.disabled=false}},
+logout(){setTk(null);me=null;myO=[];myB=[];brand();draw()},
+async cancelB(i){if(!confirm("Cancel this booking? Your advance payment will not be refunded."))return;try{await api("/api/my/bookings/"+i+"/cancel",{method:"POST"});await accLoad();draw();toast("Booking cancelled")}catch(e){toast(e.message)}},
+async day(i){cb.date=i;cb.sel=null;cb.cab=null;cb.done=0;await cabLoad();draw()},
+pick(i){cb.sel=+i;cb.cab=null;cb.done=0;draw()},
+cabin(i){cb.cab=+i;draw()},
+async book(){if(cb.cab==null)return toast("Choose a cabin");const b=$("#bb"),bt=b.textContent,off=()=>{b.disabled=false;b.textContent=bt};b.disabled=true;b.textContent="Starting payment";
+try{await rzp();
+const d=await api("/api/bookings/create",{method:"POST",headers:H,body:JSON.stringify({date:cb.date,start:hm(cb.sel),hours:cb.dur,cabin:cb.cab,note:$("#bn")?$("#bn").value:""})});
+new Razorpay({key:d.key,order_id:d.orderId,amount:d.amount,currency:"INR",name:S.cfg.name,description:"Cabin advance",prefill:{name:me.name,contact:me.phone},theme:{color:"#f4b942"},
+handler:async r=>{try{cb.done=await api("/api/bookings/verify",{method:"POST",headers:H,body:JSON.stringify({orderId:r.razorpay_order_id,paymentId:r.razorpay_payment_id,signature:r.razorpay_signature})});cb.sel=null;cb.cab=null}catch(e){toast(e.message)}await cabLoad();draw()},
+modal:{ondismiss:async()=>{await cabLoad();draw()}}}).open()}
+catch(e){toast(e.message);off();await cabLoad();draw()}},
+async place(){
+const b=$("#pb"),bt=b.textContent,off=()=>{b.disabled=false;b.textContent=bt};b.disabled=true;b.textContent="Starting payment";
+try{await rzp();
+const d=await api("/api/orders/create",{method:"POST",headers:H,body:JSON.stringify({tableNo:$("#tb").value,note:$("#nt").value,items:Object.entries(cart).map(([id,qty])=>({id,qty}))})});
+new Razorpay({key:d.key,order_id:d.orderId,amount:d.amount,currency:"INR",name:S.cfg.name,description:"Café order "+d.code,prefill:{name:me.name,contact:me.phone},theme:{color:"#f4b942"},
+handler:async r=>{try{last=await api("/api/orders/verify",{method:"POST",headers:H,body:JSON.stringify({orderId:r.razorpay_order_id,paymentId:r.razorpay_payment_id,signature:r.razorpay_signature})});cart={};cc();draw()}catch(e){toast(e.message);off()}},
+modal:{ondismiss:off}}).open()}catch(e){toast(e.message);off()}}};
+document.addEventListener("click",e=>{const t=e.target.closest("[data-a]");if(t&&A[t.dataset.a])A[t.dataset.a](t.dataset.id)});
+const C={async date(v){cb.date=v;cb.sel=null;cb.cab=null;cb.done=0;await cabLoad();draw()},dur(v){cb.dur=+v;cb.sel=null;cb.cab=null;draw()}};
+document.addEventListener("change",e=>{const t=e.target.closest("[data-c]");if(t&&C[t.dataset.c])C[t.dataset.c](t.value)});
+async function enter(d){await load();const r=(location.hash||"#home").slice(1);if(r=="account"&&me)await accLoad();if(r=="cabins")await cabLoad();if(d)await new Promise(k=>setTimeout(k,d));draw();if(d)scrollTo(0,0)}
+function cc(){$("#cc").textContent=cnt()}
+function brand(){$("#acl").textContent=me?me.name.split(" ")[0]:"Login";$("#lg").textContent=S.cfg.name;document.title=S.cfg.name+" Café";$("#ft").textContent=[S.cfg.name+" Café",S.cfg.hours,S.cfg.address,S.cfg.phone].filter(Boolean).join(". ")}
+function obs(){const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add("in");io.unobserve(x.target)}}),{threshold:.12});document.querySelectorAll(".rv").forEach((e,i)=>{e.style.transitionDelay=(i%4)*70+"ms";io.observe(e)})}
+function draw(){const r=(location.hash||"#home").slice(1),v=V[r]?r:"home";if(v!="cart")last=null;
+$("#app").innerHTML=V[v]();document.querySelectorAll("[data-r]").forEach(a=>a.classList.toggle("on",a.dataset.r==v));
+obs();hf();const dv=$(".days"),on=dv&&dv.querySelector(".on");if(on)dv.scrollLeft=on.offsetLeft-dv.clientWidth/2+on.offsetWidth/2}
+function go(){const w=$("#wp");w.classList.remove("go");void w.offsetWidth;w.classList.add("go");enter(250)}
+addEventListener("hashchange",go);
+let hc=[],par=[],ptick=0;function hf(){hc=[...document.querySelectorAll("#h1 .ch")];par=[...document.querySelectorAll("[data-p]")]}
+let px=-999,py=-999,raf=0;
+addEventListener("pointermove",e=>{if(e.pointerType&&e.pointerType!=="mouse")return;px=e.clientX;py=e.clientY;const d=$("#cd"),r=$("#cr");d.style.transform=`translate(${px}px,${py}px)`;r.style.transform=`translate(${px}px,${py}px)`;r.classList.toggle("big2",!!e.target.closest("a,button,.card,.chip"));
+const c=e.target.closest(".card");if(c){const b=c.getBoundingClientRect(),x=(px-b.left)/b.width-.5,y=(py-b.top)/b.height-.5;c.style.transform=`perspective(700px) rotateY(${x*14}deg) rotateX(${-y*14}deg)`}
+const m=e.target.closest(".mag");if(m){const b=m.getBoundingClientRect();m.style.transform=`translate(${(px-b.left-b.width/2)*.25}px,${(py-b.top-b.height/2)*.35}px)`}
+if(!raf)raf=requestAnimationFrame(()=>{raf=0;hc.forEach(s=>{const b=s.getBoundingClientRect(),d=Math.hypot(px-b.left-b.width/2,py-b.top-b.height/2),k=Math.max(0,1-d/260);s.style.fontVariationSettings=`"wght" ${300+k*500},"wdth" ${100-k*20}`})})});
+document.addEventListener("pointerout",e=>{const c=e.target.closest(".card,.mag");if(c&&!c.contains(e.relatedTarget))c.style.transform=""});
+addEventListener("scroll",()=>{const r=$("#cr");r.classList.add("hide");clearTimeout(window.sh);window.sh=setTimeout(()=>r.classList.remove("hide"),200);if(!ptick)ptick=requestAnimationFrame(()=>{ptick=0;const y=scrollY;par.forEach(e=>e.style.transform=`translateY(${y*e.dataset.p}px)`)})},{passive:true});
+brand();draw();enter();
+</script></body></html>

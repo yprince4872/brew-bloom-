@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#e6eed8" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0c2420" media="(prefers-color-scheme: dark)">
+<title>Admin · Brew &amp; Bloom</title>
+<style>
+:root{--bg:#e6eed8;--fg:#0e2a25;--card:#f4f8ea;--mut:#4d6660;--btn:#f4b942;--btnt:#0e2a25;--rose:#c23a62;--line:rgba(14,42,37,.18);box-sizing:border-box;color-scheme:light}
+@media(prefers-color-scheme:dark){:root{--bg:#0c2420;--fg:#eaf0dc;--card:#14332d;--mut:#9db5ab;--rose:#ff7a9c;--line:rgba(234,240,220,.2);color-scheme:dark}}
+*,*:before,*:after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 1rem/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
+.top{display:flex;align-items:center;gap:1rem;padding:.9rem 1.2rem;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+.top h1{font-size:1.2rem;margin:0;margin-right:auto}
+.wrap{max-width:1150px;margin:0 auto;padding:1.2rem}
+.btn{border:0;background:var(--btn);color:var(--btnt);font-weight:700;border-radius:99px;padding:.6rem 1.2rem;cursor:pointer}
+.btn.ghost,.chip{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+.chip{border-radius:99px;padding:.35rem .9rem;cursor:pointer;font-weight:600}
+.chip.on{background:var(--fg);color:var(--bg)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.2rem;margin-bottom:1rem}
+input,select,textarea{width:100%;padding:.65rem .8rem;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);margin:.25rem 0 .8rem}
+label{font-weight:600;font-size:.9rem}
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.stats{display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:1rem}
+.stats b{display:block;font-size:1.9rem;line-height:1.1}
+.sc{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:640px}
+td,th{text-align:left;padding:.6rem;border-bottom:1px solid var(--line);vertical-align:top}
+small{color:var(--mut)}
+.tag{display:inline-block;padding:.1rem .65rem;border-radius:99px;background:var(--btn);color:var(--btnt);font-weight:700;font-size:.8rem}
+.tag.Done,.tag.Confirmed{background:#7d9a6a}.tag.Blocked{background:#999}.tag.Cancelled{background:#999}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.6rem}
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translate(-50%,200%);background:var(--fg);color:var(--bg);padding:.7rem 1.3rem;border-radius:99px;font-weight:600;transition:transform .4s;z-index:9}
+.toast.on{transform:translate(-50%,0)}
+
+html{-webkit-text-size-adjust:100%}
+a,button,label,.chip{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+@media(max-width:720px){
+.top{padding:.7rem 1rem}.top #live{display:none}
+.wrap{padding:.9rem}
+.panel{padding:1rem}
+.panel.sc{background:none;border:0;padding:0}
+table{min-width:0}
+tr{display:block;border:1px solid var(--line);border-radius:12px;padding:.4rem .5rem;margin:.6rem 0}
+td,th{display:block;border:0;padding:.25rem .2rem}
+tr:has(th){display:none}
+.chip{min-height:40px;margin:.15rem 0;white-space:nowrap}
+.btn{min-height:44px;white-space:nowrap}
+.tabs{flex-wrap:nowrap;overflow-x:auto;margin-inline:-.9rem;padding-inline:.9rem;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.stats{gap:1.2rem}
+.toast{bottom:calc(1rem + env(safe-area-inset-bottom,0px))}
+}
+</style></head><body>
+<div class="top"><h1 id="tt">Admin</h1><span id="live"></span><button class="btn ghost" id="lo" hidden>Sign out</button></div>
+<div class="wrap" id="app"></div>
+<div class="toast" id="ts" role="status"></div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])),rs=n=>"₹"+Number(n).toLocaleString("en-IN");
+const fd=s=>{const[y,m,x]=s.split("-");return +x+" "+["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m-1]+" "+y};
+const s12=s=>{const[a,b]=s.split(":"),h=+a;return ((h%12)||12)+":"+b+" "+(h<12?"AM":"PM")};
+let tab="orders",orders=[],book=[],users=[],menu=[],cfg={},ofl="All",seen=null,timer=null;
+const tok=()=>sessionStorage.getItem("bbt");
+function toast(t){const e=$("#ts");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),2200)}
+async function api(p,m="GET",b){
+  const r=await fetch("/api/admin"+p,{method:m,headers:{"Content-Type":"application/json",Authorization:"Bearer "+tok()},body:b?JSON.stringify(b):undefined});
+  if(r.status==401){out();throw new Error("Please sign in again")}
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||"Something went wrong");return j}
+const pick=()=>new Promise(ok=>{const i=document.createElement("input");i.type="file";i.accept="image/*";i.onchange=()=>ok(i.files[0]);i.click()});
+function img(f){return new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,700/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);c.getContext("2d").drawImage(i,0,0,c.width,c.height);ok(c.toDataURL("image/jpeg",.8))};i.onerror=()=>no(new Error("Could not open this photo"));i.src=r.result};r.onerror=()=>no(new Error("Could not read this photo"));r.readAsDataURL(f)})}
+function out(){sessionStorage.removeItem("bbt");clearInterval(timer);$("#lo").hidden=true;$("#live").textContent="";login()}
+$("#lo").onclick=out;
+function login(){$("#app").innerHTML=`<div class="panel" style="max-width:380px;margin:3rem auto"><h2 style="margin-top:0">Sign in</h2><label>Admin PIN<input id="pn" type="password" autocomplete="current-password"></label><button class="btn" id="lg">Sign in</button></div>`;
+  const go=async()=>{try{const r=await fetch("/api/admin/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pin:$("#pn").value})}),j=await r.json();
+    if(!r.ok)return toast(j.error||"Login failed");sessionStorage.setItem("bbt",j.token);start()}catch(e){toast("Could not reach the server")}};
+  $("#lg").onclick=go;$("#pn").onkeydown=e=>{if(e.key=="Enter")go()};$("#pn").focus()}
+async function refresh(first){try{orders=await api("/orders");book=await api("/bookings");
+  const n=orders.filter(o=>o.status=="New").length+book.filter(r=>r.status=="Pending").length;document.title=(n?"("+n+") ":"")+"Admin · Brew & Bloom";
+  if(seen!==null&&orders.length>seen)toast("New order received");seen=orders.length;
+  $("#live").textContent="Live, updates every 10 seconds";if((tab=="orders"||tab=="cab")&&!document.activeElement.closest("input"))draw()}catch(e){if(first)toast(e.message)}}
+async function start(){$("#lo").hidden=false;try{[menu,cfg]=await Promise.all([api("/menu"),api("/settings")])}catch(e){return}
+  $("#tt").textContent=cfg.name+" Admin";await refresh(true);draw();clearInterval(timer);timer=setInterval(refresh,10000)}
+function draw(){
+  const T=[["orders","Orders"],["cab","Cabin bookings"],["menu","Menu items"],["usr","Customers"],["set","Site content"]];
+  let b="";
+  if(tab=="orders"){
+    const today=orders.filter(o=>new Date(o.createdAt).toDateString()==new Date().toDateString()&&o.status!="Cancelled");
+    const L=orders.filter(o=>ofl=="All"||o.status==ofl),F=["New","Preparing","Ready","Done"];
+    b=`<div class="stats"><span><b>${today.length}</b><small>orders today</small></span><span><b>${rs(today.reduce((a,o)=>a+o.total,0))}</b><small>collected today</small></span><span><b>${orders.filter(o=>o.status=="New").length}</b><small>waiting</small></span></div>
+    <div class="tabs">${["All",...F,"Cancelled"].map(s=>`<button class="chip ${s==ofl?"on":""}" data-f="${s}">${s}</button>`).join("")}</div>
+    <div class="panel sc"><table><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>UPI ref</th><th>Status</th></tr>${L.map(o=>`<tr><td><b>${esc(o.code)}</b><br><small>${new Date(o.createdAt).toLocaleString("en-IN")}</small></td><td>${esc(o.name)}<br><small>${esc(o.phone)}${o.tableNo?" · Table "+esc(o.tableNo):""}</small>${o.note?"<br><small>"+esc(o.note)+"</small>":""}</td><td>${o.items.map(i=>esc(i.name)+" × "+i.qty).join("<br>")}</td><td>${rs(o.total)}</td><td>${esc(o.txn)}</td><td><span class="tag ${o.status}">${o.status}</span><br>${F.includes(o.status)&&o.status!="Done"?`<button class="chip" data-st="${o._id}" data-to="${F[F.indexOf(o.status)+1]}">Mark ${F[F.indexOf(o.status)+1]}</button> `:""}${o.status!="Done"&&o.status!="Cancelled"?`<button class="chip" data-st="${o._id}" data-to="Cancelled">Cancel</button>`:""}</td></tr>`).join("")||'<tr><td colspan="6">No orders here yet.</td></tr>'}</table></div>`}
+  if(tab=="cab"){const so=[30,60];
+    const act=r=>r.status=="Blocked"?`<button class="chip" data-bd="${r._id}">Remove block</button>`:`${r.status!="Confirmed"?`<button class="chip" data-bs="${r._id}" data-to="Confirmed">Confirm</button> `:""}${r.status!="Cancelled"?`<button class="chip" data-bs="${r._id}" data-to="Cancelled">Cancel</button> `:""}<button class="chip" data-bc="${r._id}">Change cabin</button>`;
+    b=`<div class="panel"><h3 style="margin-top:0">Cabin settings</h3><div class="form"><label>Opens at<input id="co" type="time" value="${esc(cfg.cabinOpen||"10:00")}"></label><label>Closes at<input id="cl" type="time" value="${esc(cfg.cabinClose||"22:00")}"></label><label>Start time gap<select id="cs">${so.map(x=>`<option value="${x}" ${cfg.cabinSlot==x?"selected":""}>${x} min</option>`).join("")}</select></label><label>Charge per hour (₹)<input id="cr" type="number" min="1" value="${esc(cfg.cabinRate||"300")}"></label><label>Advance to pay online (₹)<input id="ca" type="number" min="1" value="${esc(cfg.cabinAdvance||"100")}"></label></div><p>${[1,2,3].map(i=>`<label style="margin-right:1rem"><input type="checkbox" id="cab${i}" ${cfg["cab"+i]!=="0"?"checked":""} style="width:auto;margin:0 .3rem 0 0">Cabin ${i} open for booking</label>`).join("")}</p><button class="btn" data-a="csave">Save cabin settings</button></div>
+    <div class="panel"><h3 style="margin-top:0">Block a time (cabin closed for customers)</h3><div class="form"><input id="bd" type="date"><select id="bcn"><option value="0">All cabins</option><option value="1">Cabin 1</option><option value="2">Cabin 2</option><option value="3">Cabin 3</option></select><input id="bs" type="time"><input id="be" type="time"><input id="br" placeholder="Reason (optional)"></div><button class="btn" data-a="block">Block this time</button></div>
+    <div class="panel sc"><table><tr><th>Date and time</th><th>Cabin</th><th>Customer</th><th>Status</th></tr>${book.map(r=>`<tr><td><b>${fd(r.date)}</b><br>${s12(r.start)} to ${s12(r.end)}</td><td>${r.cabin?"Cabin "+r.cabin:"All cabins"}</td><td>${r.status=="Blocked"?"Blocked"+(r.reason?": "+esc(r.reason):""):`${esc(r.name)}<br><small>${esc(r.phone)}${r.note?" · "+esc(r.note):""}</small>${r.total?`<br><small>${r.hours} hr · ₹${r.total} total · ₹${r.advance} advance paid</small>`:""}`}</td><td><span class="tag ${r.status}">${r.status=="Pending"?"Needs attention":r.status}</span><br>${act(r)}</td></tr>`).join("")||'<tr><td colspan="4">No cabin bookings yet.</td></tr>'}</table></div>`}
+  if(tab=="usr")b=`<div class="panel sc"><table><tr><th>Name</th><th>Mobile</th><th>Joined</th><th></th></tr>${users.map(u=>`<tr><td>${esc(u.name)}</td><td>${esc(u.phone)}</td><td>${new Date(u.createdAt).toLocaleDateString("en-IN")}${u.lockUntil&&new Date(u.lockUntil)>new Date()?"<br><small>Locked after wrong PINs</small>":""}</td><td><button class="chip" data-up="${u._id}">Reset PIN</button></td></tr>`).join("")||'<tr><td colspan="4">No customers yet.</td></tr>'}</table></div>`;
+  if(tab=="menu")b=`<div class="panel"><h3 style="margin-top:0">Add an item</h3><div class="form"><input id="an" placeholder="Name"><input id="ac" placeholder="Category"><input id="ap" type="number" min="1" placeholder="Price"><input id="ae" placeholder="Emoji"><input id="ad" placeholder="Description"></div><label>Photo (optional)<input id="ai" type="file" accept="image/*"></label><button class="btn" data-a="add">Add item</button></div>
+    <div class="panel sc"><table>${menu.map(m=>`<tr><td>${m.img?`<img src="${esc(m.img)}" alt="" style="width:44px;height:44px;object-fit:cover;border-radius:8px;vertical-align:middle">`:esc(m.emoji)} <b>${esc(m.name)}</b><br><small>${esc(m.category)} · ${esc(m.description)}</small></td><td>${rs(m.price)}</td><td><button class="chip" data-a="edit" data-id="${m._id}">Edit</button> <button class="chip" data-a="photo" data-id="${m._id}">${m.img?"Change photo":"Add photo"}</button>${m.img?` <button class="chip" data-a="rmphoto" data-id="${m._id}">Remove photo</button>`:""} <button class="chip" data-a="tog" data-id="${m._id}">${m.available?"Mark sold out":"Back in stock"}</button> <button class="chip" data-a="del" data-id="${m._id}">Delete</button></td></tr>`).join("")||"<tr><td>No items yet. Add your first one above.</td></tr>"}</table></div>`;
+  if(tab=="set"){const f=(k,l,ta)=>`<label>${l}${ta?`<textarea id="c_${k}" rows="3">${esc(cfg[k]||"")}</textarea>`:`<input id="c_${k}" value="${esc(cfg[k]||"")}">`}</label>`;
+    b=`<div class="panel" style="max-width:640px">${f("name","Café name")}${f("heroTitle","Home page main heading")}${f("heroText","Home page text",1)}${f("storyTitle","About section heading")}${f("storyText","About section text",1)}${f("hours","Opening hours")}${f("address","Address")}${f("phone","Phone number")}${f("upi","UPI ID (optional, Razorpay handles payments)")}<button class="btn" data-a="save">Save changes</button></div>`}
+  $("#app").innerHTML=`<div class="tabs">${T.map(([k,l])=>`<button class="chip ${tab==k?"on":""}" data-t="${k}">${l}</button>`).join("")}</div>`+b}
+document.addEventListener("click",async e=>{const t=e.target.closest("button");if(!t)return;
+  try{
+    if(t.dataset.t){tab=t.dataset.t;if(tab=="usr")users=await api("/users");draw()}
+    else if(t.dataset.f){ofl=t.dataset.f;draw()}
+    else if(t.dataset.st){await api("/orders/"+t.dataset.st,"PATCH",{status:t.dataset.to});await refresh();draw()}
+    else if(t.dataset.bs){await api("/bookings/"+t.dataset.bs,"PATCH",{status:t.dataset.to});await refresh();draw();toast("Updated")}
+    else if(t.dataset.bc){const r=book.find(x=>x._id==t.dataset.bc),c=prompt("Cabin number (1, 2 or 3)",r.cabin);if(c===null)return;await api("/bookings/"+r._id,"PATCH",{cabin:c});await refresh();draw();toast("Cabin changed")}
+    else if(t.dataset.bd){if(!confirm("Remove this block?"))return;await api("/bookings/"+t.dataset.bd,"DELETE");await refresh();draw()}
+    else if(t.dataset.up){const p=prompt("New PIN for this customer (4 to 6 digits)");if(p===null)return;await api("/users/"+t.dataset.up+"/pin","POST",{pin:p});toast("PIN reset")}
+    else if(t.dataset.a=="block"){await api("/blocks","POST",{date:$("#bd").value,cabin:$("#bcn").value,start:$("#bs").value,end:$("#be").value,reason:$("#br").value});await refresh();draw();toast("Time blocked")}
+    else if(t.dataset.a=="csave"){cfg=await api("/settings","PUT",{cabinOpen:$("#co").value,cabinClose:$("#cl").value,cabinSlot:$("#cs").value,cabinRate:$("#cr").value,cabinAdvance:$("#ca").value,cab1:$("#cab1").checked?"1":"0",cab2:$("#cab2").checked?"1":"0",cab3:$("#cab3").checked?"1":"0"});toast("Cabin settings saved")}
+    else if(t.dataset.a=="photo"){const m=menu.find(m=>m._id==t.dataset.id),f=await pick();if(!f)return;await api("/menu/"+m._id,"PUT",{...m,image:await img(f)});menu=await api("/menu");draw();toast("Photo saved")}
+    else if(t.dataset.a=="rmphoto"){const m=menu.find(m=>m._id==t.dataset.id);await api("/menu/"+m._id,"PUT",{...m,removeImage:true});menu=await api("/menu");draw()}
+    else if(t.dataset.a=="add"){await api("/menu","POST",{name:$("#an").value,category:$("#ac").value,price:$("#ap").value,emoji:$("#ae").value,description:$("#ad").value,image:$("#ai").files[0]?await img($("#ai").files[0]):undefined});menu=await api("/menu");draw();toast("Item added")}
+    else if(t.dataset.a=="tog"){const m=menu.find(m=>m._id==t.dataset.id);await api("/menu/"+m._id,"PUT",{...m,available:!m.available});menu=await api("/menu");draw()}
+    else if(t.dataset.a=="edit"){const m=menu.find(m=>m._id==t.dataset.id),n=prompt("Name",m.name);if(n===null)return;const p=prompt("Price",m.price);if(p===null)return;const d=prompt("Description",m.description);if(d===null)return;
+      await api("/menu/"+m._id,"PUT",{...m,name:n,price:p,description:d});menu=await api("/menu");draw();toast("Item updated")}
+    else if(t.dataset.a=="del"){if(!confirm("Delete this item?"))return;await api("/menu/"+t.dataset.id,"DELETE");menu=await api("/menu");draw()}
+    else if(t.dataset.a=="save"){const o={};for(const k of ["name","heroTitle","heroText","storyTitle","storyText","hours","address","phone","upi"])o[k]=$("#c_"+k).value;cfg=await api("/settings","PUT",o);$("#tt").textContent=cfg.name+" Admin";toast("Settings saved")}
+  }catch(err){toast(err.message)}});
+tok()?start():login();
+</script></body></html>
